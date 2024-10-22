@@ -1,33 +1,17 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 public class CoroutineTester : MonoBehaviour
 {
-    [SerializeField] private Color destinationColor;
     [SerializeField] private float time;
-    //[SerializeField] private Material mat;
-    //[SerializeField] private Renderer renderer;
     [SerializeField] private AnimationCurve curve;
-    [SerializeField] private Volume volume;
-    private ChromaticAberration chromaticAberration;
-
-    private void Awake()
-    {
-        volume = GetComponent<Volume>();
-        if (!volume.profile.TryGet(out chromaticAberration))
-            Debug.LogError("Did not find a chromatic aberration in PostEffects");
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartCoroutine(MyCoroutine());
-    }
-
+    private float velocity = 0;
+    private float velocityScale = 5;
+    private Coroutine coroutine;
+    
     IEnumerator MyCoroutine()
     {
         float t = 0;
@@ -36,17 +20,31 @@ public class CoroutineTester : MonoBehaviour
             t += Time.deltaTime;
 
             float eval = curve.Evaluate(t / time);
-
-            chromaticAberration.intensity.value = eval;
-
-            //renderer.material.SetColor("_BaseColor", Color.Lerp(Color.white, destinationColor, t / time));
+            velocity += eval * velocityScale * Time.deltaTime;
+            
             yield return null;
         }
+
+        coroutine = null;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (coroutine != null)
+                StopCoroutine(coroutine);
+            coroutine = StartCoroutine(MyCoroutine());
+        }
+
+        Vector3 xz = transform.position;
+        xz.y = 0;
+        Vector3 tangentialVelocity = Vector3.Cross(Vector3.up, xz);
+        transform.position += velocity * Time.deltaTime * tangentialVelocity;
         
+        // de-acceleration
+        velocity -= Time.deltaTime * 2;
+        if (velocity < 0)
+            velocity = 0;
     }
 }

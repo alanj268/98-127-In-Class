@@ -11,6 +11,7 @@ public class CoroutineMove : MonoBehaviour
     [SerializeField] private float time;
     [SerializeField] private float speed;
     [SerializeField] private AnimationCurve curve;
+    private Coroutine coroutine;
 
     private void Awake()
     {
@@ -30,8 +31,11 @@ public class CoroutineMove : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            StartCoroutine(MyCoroutine());
+            if (coroutine != null)
+                StopCoroutine(coroutine);
+            coroutine = StartCoroutine(MyCoroutine());
         }
+
     }
 
     IEnumerator MyCoroutine()
@@ -50,6 +54,8 @@ public class CoroutineMove : MonoBehaviour
             transform.position = Vector3.Lerp(start, dest, eval);
             yield return null;
         }
+
+        coroutine = null;
     }
 
     // Update is called once per frame

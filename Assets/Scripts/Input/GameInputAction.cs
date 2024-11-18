@@ -57,7 +57,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Punch"",
                     ""type"": ""Button"",
-                    ""id"": ""d7ef6d4f-9d2a-46ed-a89b-b17a2e032cd7"",
+                    ""id"": ""1a717348-0e82-4e8d-a961-2bdf806137c2"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -144,7 +144,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""728a665d-9394-4130-a441-b8d1bf32ce4b"",
+                    ""id"": ""4d71a6a1-35d7-415c-9f4e-08249b220898"",
                     ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
                     ""processors"": """",

@@ -1,104 +1,73 @@
+using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
-using System.Collections;
 
 public class TextRenderer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI displayText;
-
-    [SerializeField] private float time;
-    private Coroutine coroutine;
     [SerializeField] private CanvasGroup canvasGroup;
+
+    private Coroutine textTypeCoroutine, canvasGroupCoroutine;
+    private int charactersToDisplay;
 
     private void Start()
     {
-        //displayText.text = "Hi world";
-        //displayText.maxVisibleCharacters = 10;
-        //StartCoroutine(FadeOut());
+        charactersToDisplay = 0;
     }
 
-    IEnumerator AppearText()
+    IEnumerator TextAlphaRoutine(float end)
     {
-        int characterstoDisplay = 0;
-
-        while (characterstoDisplay < displayText.text.Length)
-        {
-            characterstoDisplay++;
-            displayText.maxVisibleCharacters = characterstoDisplay;
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    IEnumerator DisappearText()
-    {
-        int characterstoDisplay = displayText.text.Length;
-
-        while (characterstoDisplay > 0)
-        {
-            characterstoDisplay--;
-            displayText.maxVisibleCharacters = characterstoDisplay;
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    IEnumerator FadeOut()
-    {
-        float transparency = canvasGroup.alpha;
-
-        while (transparency > 0)
-        {
-            transparency -= (float) 0.1;
-            canvasGroup.alpha = transparency;
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    IEnumerator FadeIn()
-    {
-        float alphaValue = canvasGroup.alpha;
-        float transparency = 0;
-
-        while (transparency < alphaValue)
-        {
-            transparency += (float) 0.1;
-            canvasGroup.alpha = transparency;
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    /*IEnumerator TextFadeIn()
-    {
+        float start = canvasGroup.alpha;
+        
         float t = 0;
-
-        while (t <= 3)
+        while (t <= 0.5f)
         {
             t += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(0, 1, t / 3);
+            canvasGroup.alpha = Mathf.Lerp(start, end, t / 0.5f);
             yield return null;
         }
     }
 
-    IEnumerator TextFadeOut()
+    IEnumerator AppearTextRoutine()
     {
-        float t = 0;
-
-        while (t <= 3)
+        while (charactersToDisplay < displayText.text.Length)
         {
-            t += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(1, 0, t / 3);
-            yield return null;
+            charactersToDisplay++;
+            displayText.maxVisibleCharacters = charactersToDisplay;
+            yield return new WaitForSeconds(0.1f);
         }
-    }*/
+    }
+    
+    IEnumerator DisappearTextRoutine()
+    {
+        while (charactersToDisplay > 0)
+        {
+            charactersToDisplay--;
+            displayText.maxVisibleCharacters = charactersToDisplay;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(FadeIn());
-        StartCoroutine(AppearText());
+        if (textTypeCoroutine != null)
+            StopCoroutine(textTypeCoroutine);
+        textTypeCoroutine = StartCoroutine(AppearTextRoutine());
+        
+        if (canvasGroupCoroutine != null)
+            StopCoroutine(canvasGroupCoroutine);
+        canvasGroupCoroutine = StartCoroutine(TextAlphaRoutine(1));
     }
 
     private void OnTriggerExit(Collider other)
     {
-        StartCoroutine(DisappearText());
-        StartCoroutine(FadeOut());
+        if (textTypeCoroutine != null)
+            StopCoroutine(textTypeCoroutine);
+        textTypeCoroutine = StartCoroutine(DisappearTextRoutine());
+        
+        if (canvasGroupCoroutine != null)
+            StopCoroutine(canvasGroupCoroutine);
+        canvasGroupCoroutine = StartCoroutine(TextAlphaRoutine( 0));
     }
 }

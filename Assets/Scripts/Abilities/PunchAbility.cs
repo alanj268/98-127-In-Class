@@ -1,8 +1,11 @@
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
-[CreateAssetMenu(fileName = "AbilitySO", menuName = "Abilities/PunchAbility", order = 1)]
+
+[CreateAssetMenu(fileName="AbilitySO", menuName = "Abililities/PunchAbility")]
 public class PunchAbility : AbilitySO
 {
     [SerializeField] private float duration = 2;
+    
     protected override bool Cast()
     {
         Player.Instance.SetAnimationTrigger(abilityAnimationTrigger);

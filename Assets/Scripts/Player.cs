@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public static Player Instance { get; private set; }
+    
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintSpeed = 20;
     [SerializeField] private GameInputManager gameInputManager;
@@ -13,15 +14,16 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject hitVFXPrefab;
     
     private Vector3 cursorDirection;
+
     private Dictionary<int, AbilitySO> abilities;
     private AbilitySO[] playerAbilitiesList;
 
     private void Awake()
     {
         Instance = this;
-
+        
         playerAbilitiesList = Resources.LoadAll<AbilitySO>("");
-
+        
         abilities = new Dictionary<int, AbilitySO>();
         foreach (AbilitySO ability in playerAbilitiesList)
         {
@@ -34,7 +36,7 @@ public class Player : MonoBehaviour
     {
         HandleMovement();
         RaycastToCursor();
-
+        
         foreach (AbilitySO ability in abilities.Values)
             ability.DecreaseCooldown();
     }
@@ -100,7 +102,7 @@ public class Player : MonoBehaviour
 
     public void PlayAbility(int abilityID)
     {
-        if(abilities.TryGetValue(abilityID, out AbilitySO ability))
+        if (abilities.TryGetValue(abilityID, out AbilitySO ability))
         {
             ability.Activate();
         }

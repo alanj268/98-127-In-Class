@@ -18,6 +18,9 @@ public class Player : MonoBehaviour
     private Dictionary<int, AbilitySO> abilities;
     private AbilitySO[] playerAbilitiesList;
 
+    private Inventory inventory = new();
+    public Inventory Inventory => inventory;
+
     private void Awake()
     {
         Instance = this;
@@ -30,6 +33,12 @@ public class Player : MonoBehaviour
             abilities.Add(ability.ID, ability);
             ability.SetState(AbilitySO.State.Ready);
         }
+        
+        // ItemSO[] allItems = Resources.LoadAll<ItemSO>("Items");
+        // foreach (var item in allItems)
+        // {
+        //     inventory.Add(item);
+        // }
     }
 
     private void Update()
@@ -39,6 +48,29 @@ public class Player : MonoBehaviour
         
         foreach (AbilitySO ability in abilities.Values)
             ability.DecreaseCooldown();
+
+        DebugAllItems();
+    }
+
+    private void DebugAllItems()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (inventory.inventory.Count == 0)
+            {
+                print("Inventory is empty!");
+                return;
+            }
+            
+            foreach (var kv in inventory.inventory)
+            {
+                print($"Item type: {kv.Key}");
+                foreach (var itemNameToItemSO in kv.Value)
+                {
+                    print($"Found item with description: {itemNameToItemSO.Value.description}");
+                }
+            }
+        }
     }
 
     public void OnShoot()
